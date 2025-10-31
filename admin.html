@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Admin — Lunalé</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <header class="site-header">
+    <div class="brand"><img src="/images/logo.svg" alt="Lunalé" class="logo" /></div>
+    <nav class="nav"><a href="/" class="home-link">Home</a></nav>
+  </header>
+
+  <main class="container admin">
+    <section>
+      <h3>Add Product</h3>
+      <form id="addForm">
+        <input name="name" placeholder="Name" required />
+        <input name="price" placeholder="Price (USD)" />
+        <input name="category" placeholder="Category" />
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="file" name="image" accept="image/*" />
+        <button type="submit">Add</button>
+      </form>
+    </section>
+
+    <section>
+      <h3>Upload CSV (name,description,price,category,image)</h3>
+      <form id="csvForm" enctype="multipart/form-data">
+        <input type="file" name="csvfile" accept=".csv" required />
+        <button type="submit">Upload CSV</button>
+      </form>
+    </section>
+
+    <section>
+      <h3>Quick tips</h3>
+      <p>Use the placeholder image names or upload images via the form.</p>
+    </section>
+  </main>
+
+<script>
+document.getElementById('addForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const res = await fetch('/api/admin/add',{ method:'POST', body: fd });
+  const j = await res.json();
+  alert(j.success ? 'Added' : ('Error: '+ (j.error||'')) );
+});
+
+document.getElementById('csvForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const res = await fetch('/api/admin/upload-csv', { method:'POST', body: fd });
+  const j = await res.json();
+  alert(j.success ? `Inserted ${j.inserted}` : ('Error: '+ (j.error||'')));
+});
+</script>
+</body>
+</html>

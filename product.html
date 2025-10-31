@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product — Lunalé</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/images/logo.svg" alt="Lunalé" class="logo" />
+    </div>
+    <nav class="nav">
+      <a href="/" class="home-link">Home</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="product"></div>
+  </main>
+
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+if (!id) document.getElementById('product').innerText = 'No product specified.';
+else {
+  fetch(`/api/products/${id}`).then(r=>r.json()).then(p=>{
+    document.getElementById('product').innerHTML = `
+      <h2 class="prod-name">${p.name}</h2>
+      <div class="product-detail">
+        ${p.image ? `<img src="${p.image}" alt="${p.name}" />` : ''}
+        <div class="prod-info">
+          <p class="prod-desc">${p.description || ''}</p>
+          <p class="prod-price"><strong>Price:</strong> ${p.price} USD</p>
+          <p class="prod-cat"><strong>Category:</strong> ${p.category || '-'}</p>
+        </div>
+      </div>
+    `;
+  }).catch(e=> document.getElementById('product').innerText = 'Error fetching product.');
+}
+</script>
+</body>
+</html>
